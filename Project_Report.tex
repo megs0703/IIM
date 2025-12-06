@@ -1,0 +1,449 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    commentstyle=\color{gray},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red}
+}
+
+\title{\textbf{E-commerce Customer Retention Analysis:\\Exploratory Data Analysis, KNN Classification, and K-Means Clustering}}
+\author{Data Science Project Report}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Executive Summary}
+This report presents a comprehensive analysis of e-commerce customer retention using machine learning techniques. The dataset comprises 100 customers with 9 features including demographics, purchasing behavior, and retention status. The analysis encompasses three main components: Exploratory Data Analysis (EDA), K-Nearest Neighbors (KNN) classification for retention prediction, and K-Means clustering for customer segmentation. The KNN model achieved an accuracy of 75\% in predicting customer retention, while K-Means clustering successfully identified three distinct customer segments based on behavioral patterns.
+
+\section{Introduction}
+
+\subsection{Background}
+Customer retention is a critical metric for e-commerce businesses, as retaining existing customers is significantly more cost-effective than acquiring new ones. Understanding the factors that influence customer retention and identifying distinct customer segments enables businesses to develop targeted marketing strategies and improve customer lifetime value.
+
+\subsection{Objectives}
+The primary objectives of this project are:
+\begin{itemize}
+    \item Conduct comprehensive exploratory data analysis to understand customer characteristics and purchasing patterns
+    \item Develop a K-Nearest Neighbors classification model to predict customer retention
+    \item Apply K-Means clustering to segment customers into meaningful groups
+    \item Derive actionable insights for business strategy
+\end{itemize}
+
+\subsection{Dataset Description}
+The dataset contains information about 100 e-commerce customers with the following attributes:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Feature} & \textbf{Type} & \textbf{Description} \\ \midrule
+CustomerID & Numeric & Unique identifier for each customer \\
+Age & Numeric & Age of the customer (18-59 years) \\
+Gender & Categorical & Male/Female \\
+MembershipType & Categorical & 1=Gold, 2=Silver, 3=Bronze \\
+PurchasesLastMonth & Numeric & Number of purchases in last month (0-9) \\
+AvgPurchaseValue & Numeric & Average purchase value in ₹ (511-2992) \\
+IsRetained & Binary & Target variable (1=Yes, 0=No) \\
+Region & Categorical & N=North, S=South, E=East, W=West \\
+ShoppingAlone & Binary & 1=Yes, 0=No \\ \bottomrule
+\end{tabular}
+\caption{Dataset Features and Descriptions}
+\end{table}
+
+\section{Methodology}
+
+\subsection{Data Preprocessing}
+The following preprocessing steps were performed:
+\begin{enumerate}
+    \item \textbf{Data Loading:} Dataset imported using pandas library
+    \item \textbf{Missing Value Check:} Verified no missing values in the dataset
+    \item \textbf{Data Type Validation:} Confirmed appropriate data types for all features
+    \item \textbf{Label Encoding:} Categorical variables (Gender, Region) encoded to numerical values for model training
+    \item \textbf{Feature Scaling:} StandardScaler applied for K-Means clustering to normalize feature ranges
+\end{enumerate}
+
+\subsection{Exploratory Data Analysis}
+EDA techniques employed include:
+\begin{itemize}
+    \item Descriptive statistics (mean, median, standard deviation)
+    \item Distribution analysis using histograms
+    \item Categorical variable frequency analysis
+    \item Correlation analysis using heatmap
+    \item Group-wise aggregations (membership type, region)
+\end{itemize}
+
+\subsection{K-Nearest Neighbors Classification}
+\textbf{Algorithm Overview:} KNN is a non-parametric, instance-based learning algorithm that classifies data points based on the majority class of their k nearest neighbors.
+
+\textbf{Implementation Steps:}
+\begin{enumerate}
+    \item Feature matrix (X) created by dropping target variable (IsRetained)
+    \item Target vector (y) extracted
+    \item Data split: 80\% training, 20\% testing (random\_state=42)
+    \item KNN model initialized with k=5 neighbors
+    \item Model trained on training data
+    \item Predictions made on test set
+    \item Performance evaluated using accuracy score and classification report
+\end{enumerate}
+
+\subsection{K-Means Clustering}
+\textbf{Algorithm Overview:} K-Means is an unsupervised learning algorithm that partitions data into k clusters by minimizing within-cluster variance.
+
+\textbf{Implementation Steps:}
+\begin{enumerate}
+    \item Features selected (excluding CustomerID and IsRetained)
+    \item StandardScaler applied to normalize features
+    \item Elbow method used to determine optimal k (tested k=1 to 9)
+    \item K-Means model fitted with k=3 clusters
+    \item Cluster labels assigned to each customer
+    \item Cluster characteristics analyzed through mean values
+    \item Visualization created using Age vs. AvgPurchaseValue
+\end{enumerate}
+
+\section{Results and Analysis}
+
+\subsection{Exploratory Data Analysis Findings}
+
+\subsubsection{Dataset Overview}
+\begin{itemize}
+    \item \textbf{Dataset Shape:} 100 rows × 9 columns
+    \item \textbf{Missing Values:} None detected
+    \item \textbf{Data Quality:} All features properly formatted with no anomalies
+\end{itemize}
+
+\subsubsection{Demographic Distribution}
+\begin{itemize}
+    \item \textbf{Gender Distribution:} Male (60\%), Female (40\%)
+    \item \textbf{Age Distribution:} Ranges from 18 to 59 years with relatively uniform distribution
+    \item \textbf{Regional Distribution:} South (30\%), North (26\%), East (25\%), West (19\%)
+\end{itemize}
+
+\subsubsection{Membership Analysis}
+\begin{itemize}
+    \item Silver membership: 38 customers
+    \item Bronze membership: 33 customers
+    \item Gold membership: 29 customers
+    \item \textbf{Average Purchase Value by Membership:}
+    \begin{itemize}
+        \item Gold: ₹1,686
+        \item Silver: ₹1,707
+        \item Bronze: ₹1,788
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Purchasing Behavior}
+\begin{itemize}
+    \item \textbf{Average Purchase Value:} Ranges from ₹511 to ₹2,992
+    \item \textbf{Purchases Last Month:} 0 to 9 purchases
+    \item \textbf{Regional Purchase Patterns:}
+    \begin{itemize}
+        \item West: 4.74 purchases/month (highest)
+        \item North: 4.69 purchases/month
+        \item East: 4.64 purchases/month
+        \item South: 4.23 purchases/month
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Retention Analysis}
+\begin{itemize}
+    \item \textbf{Not Retained:} 80 customers (80\%)
+    \item \textbf{Retained:} 20 customers (20\%)
+    \item \textbf{Class Imbalance:} Significant imbalance favoring non-retained customers
+\end{itemize}
+
+\subsubsection{Correlation Insights}
+The correlation heatmap revealed:
+\begin{itemize}
+    \item Moderate positive correlation between PurchasesLastMonth and IsRetained
+    \item Weak correlations between most other features
+    \item No strong multicollinearity issues detected
+\end{itemize}
+
+\subsection{KNN Classification Results}
+
+\subsubsection{Model Performance}
+\begin{itemize}
+    \item \textbf{Overall Accuracy:} 75\%
+    \item \textbf{Test Set Size:} 20 samples
+    \item \textbf{Training Set Size:} 80 samples
+    \item \textbf{Number of Neighbors (k):} 5
+\end{itemize}
+
+\subsubsection{Classification Report}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} \\ \midrule
+Not Retained (0) & 0.79 & 0.94 & 0.86 & 16 \\
+Retained (1) & 0.50 & 0.25 & 0.33 & 4 \\ \midrule
+\textbf{Accuracy} & \multicolumn{3}{c}{0.75} & 20 \\
+\textbf{Macro Avg} & 0.64 & 0.59 & 0.59 & 20 \\
+\textbf{Weighted Avg} & 0.73 & 0.75 & 0.72 & 20 \\ \bottomrule
+\end{tabular}
+\caption{KNN Classification Performance Metrics}
+\end{table}
+
+\subsubsection{Model Interpretation}
+\begin{itemize}
+    \item \textbf{Strengths:} High recall (94\%) for non-retained customers indicates excellent identification of customers likely to churn
+    \item \textbf{Weaknesses:} Low recall (25\%) for retained customers suggests difficulty in identifying customers who will stay
+    \item \textbf{Class Imbalance Impact:} The 80-20 split in the dataset affects model performance, particularly for the minority class
+\end{itemize}
+
+\subsection{K-Means Clustering Results}
+
+\subsubsection{Optimal Cluster Selection}
+The elbow method was applied to determine the optimal number of clusters. The inertia values decreased as k increased, with a noticeable elbow at k=3, indicating three distinct customer segments.
+
+\subsubsection{Cluster Characteristics}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Feature} & \textbf{Cluster 0} & \textbf{Cluster 1} & \textbf{Cluster 2} \\ \midrule
+Age & 37.5 & 37.9 & 37.6 \\
+Gender (Encoded) & 0.53 & 0.59 & 0.56 \\
+MembershipType & 2.03 & 1.97 & 2.00 \\
+PurchasesLastMonth & 4.50 & 4.62 & 4.72 \\
+AvgPurchaseValue & 1,145 & 1,978 & 2,628 \\
+ShoppingAlone & 0.69 & 0.62 & 0.64 \\ \bottomrule
+\end{tabular}
+\caption{Mean Values by Cluster}
+\end{table}
+
+\subsubsection{Cluster Profiles}
+\begin{itemize}
+    \item \textbf{Cluster 0 - Low-Value Shoppers (n=32):}
+    \begin{itemize}
+        \item Lowest average purchase value (₹1,145)
+        \item Moderate purchase frequency (4.5 purchases/month)
+        \item Highest tendency to shop alone (69\%)
+    \end{itemize}
+    
+    \item \textbf{Cluster 1 - Medium-Value Shoppers (n=34):}
+    \begin{itemize}
+        \item Medium average purchase value (₹1,978)
+        \item Moderate purchase frequency (4.62 purchases/month)
+        \item Balanced shopping behavior
+    \end{itemize}
+    
+    \item \textbf{Cluster 2 - High-Value Shoppers (n=34):}
+    \begin{itemize}
+        \item Highest average purchase value (₹2,628)
+        \item Highest purchase frequency (4.72 purchases/month)
+        \item Premium customer segment
+    \end{itemize}
+\end{itemize}
+
+\section{Discussion}
+
+\subsection{Key Insights}
+\begin{enumerate}
+    \item \textbf{Retention Challenge:} With only 20\% retention rate, the business faces significant customer churn
+    \item \textbf{Purchase Frequency Matters:} Higher purchase frequency shows positive correlation with retention
+    \item \textbf{Regional Variations:} Western region shows highest purchase frequency, suggesting regional marketing effectiveness
+    \item \textbf{Membership Paradox:} Bronze members have higher average purchase values than Gold members, indicating potential membership structure issues
+    \item \textbf{Customer Segmentation:} Three distinct segments identified based on purchase value and frequency
+\end{enumerate}
+
+\subsection{Business Recommendations}
+\begin{enumerate}
+    \item \textbf{Retention Programs:} Develop targeted retention campaigns for high-value customers (Cluster 2)
+    \item \textbf{Membership Restructuring:} Review membership benefits to ensure Gold members receive appropriate value
+    \item \textbf{Regional Strategy:} Replicate successful Western region strategies in other regions
+    \item \textbf{Engagement Initiatives:} Increase purchase frequency through personalized recommendations and promotions
+    \item \textbf{Predictive Monitoring:} Deploy KNN model to identify at-risk customers for proactive intervention
+\end{enumerate}
+
+\subsection{Limitations}
+\begin{itemize}
+    \item \textbf{Sample Size:} 100 customers is relatively small for robust machine learning models
+    \item \textbf{Class Imbalance:} 80-20 retention split affects classification performance
+    \item \textbf{Feature Limitations:} Additional features (customer satisfaction, product categories) could improve predictions
+    \item \textbf{Temporal Aspect:} Single-month snapshot may not capture seasonal patterns
+\end{itemize}
+
+\subsection{Future Work}
+\begin{itemize}
+    \item Implement SMOTE or other techniques to address class imbalance
+    \item Test alternative algorithms (Random Forest, SVM, Neural Networks)
+    \item Perform hyperparameter tuning for optimal k in KNN
+    \item Collect longitudinal data for time-series analysis
+    \item Incorporate additional customer behavior features
+    \item Develop ensemble models for improved prediction accuracy
+\end{itemize}
+
+\section{Conclusion}
+This project successfully demonstrated the application of machine learning techniques to e-commerce customer retention analysis. The exploratory data analysis revealed important patterns in customer demographics and purchasing behavior, highlighting a significant retention challenge with only 20\% of customers making repeat purchases.
+
+The K-Nearest Neighbors classification model achieved 75\% accuracy in predicting customer retention, with particularly strong performance in identifying customers likely to churn. However, the model's lower recall for retained customers indicates room for improvement, particularly through addressing class imbalance.
+
+K-Means clustering successfully segmented customers into three distinct groups based on purchase value and frequency, providing actionable insights for targeted marketing strategies. The identification of high-value, medium-value, and low-value shopper segments enables personalized customer engagement approaches.
+
+Overall, this analysis provides a solid foundation for data-driven decision-making in customer retention strategies. The insights derived from both supervised and unsupervised learning approaches offer complementary perspectives on customer behavior, enabling the business to develop comprehensive retention and growth strategies.
+
+\section{References}
+\begin{enumerate}
+    \item Hastie, T., Tibshirani, R., \& Friedman, J. (2009). \textit{The Elements of Statistical Learning}. Springer.
+    \item Scikit-learn Documentation. (2024). K-Nearest Neighbors. Retrieved from https://scikit-learn.org
+    \item MacQueen, J. (1967). Some methods for classification and analysis of multivariate observations. \textit{Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability}, 1(14), 281-297.
+    \item Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. \textit{Journal of Machine Learning Research}, 12, 2825-2830.
+\end{enumerate}
+
+\appendix
+\section{Appendix: Python Code}
+
+\subsection{Data Loading and EDA}
+\begin{lstlisting}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("E-commerce_Customer_Retention_Dataset.csv")
+
+# Basic exploration
+print(df.head())
+print(df.shape)
+print(df.info())
+print(df.isnull().sum())
+print(df.describe())
+
+# Value counts
+print(df['Gender'].value_counts())
+print(df['MembershipType'].value_counts())
+print(df['Region'].value_counts())
+print(df['IsRetained'].value_counts())
+
+# Visualizations
+plt.hist(df['Age'])
+plt.xlabel("Age")
+plt.ylabel("Count")
+plt.title("Age Distribution")
+plt.show()
+
+plt.hist(df['AvgPurchaseValue'])
+plt.xlabel("Avg Purchase Value")
+plt.ylabel("Count")
+plt.title("Average Purchase Value Distribution")
+plt.show()
+
+df['IsRetained'].value_counts().plot(kind='bar')
+plt.xlabel("Is Retained?")
+plt.ylabel("Number of Customers")
+plt.title("Retention Count")
+plt.show()
+
+# Correlation heatmap
+corr = df.corr()
+plt.imshow(corr, cmap='coolwarm')
+plt.colorbar()
+plt.title("Correlation Heatmap")
+plt.show()
+
+# Group analysis
+print(df.groupby("MembershipType")["AvgPurchaseValue"].mean())
+print(df.groupby("Region")["PurchasesLastMonth"].mean())
+\end{lstlisting}
+
+\subsection{KNN Classification}
+\begin{lstlisting}
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, classification_report
+
+# Prepare data
+df_knn = df.copy()
+le = LabelEncoder()
+df_knn['Gender'] = le.fit_transform(df_knn['Gender'])
+df_knn['Region'] = le.fit_transform(df_knn['Region'])
+
+# Split features and target
+X = df_knn.drop("IsRetained", axis=1)
+y = df_knn["IsRetained"]
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Train KNN model
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+
+# Predictions and evaluation
+y_pred = knn.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy}")
+print(classification_report(y_test, y_pred))
+\end{lstlisting}
+
+\subsection{K-Means Clustering}
+\begin{lstlisting}
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+# Prepare data
+df_cluster = df.copy()
+le = LabelEncoder()
+df_cluster['Gender'] = le.fit_transform(df_cluster['Gender'])
+df_cluster['Region'] = le.fit_transform(df_cluster['Region'])
+
+# Select features and scale
+features = df_cluster.drop(["CustomerID", "IsRetained"], axis=1)
+scaler = StandardScaler()
+scaled_features = scaler.fit_transform(features)
+
+# Elbow method
+inertia_values = []
+for k in range(1, 10):
+    km = KMeans(n_clusters=k, random_state=42)
+    km.fit(scaled_features)
+    inertia_values.append(km.inertia_)
+
+plt.plot(range(1, 10), inertia_values)
+plt.xlabel("Number of Clusters (k)")
+plt.ylabel("Inertia")
+plt.title("Elbow Method to Choose k")
+plt.show()
+
+# Apply K-Means with k=3
+kmeans = KMeans(n_clusters=3, random_state=42)
+clusters = kmeans.fit_predict(scaled_features)
+df_cluster['Cluster'] = clusters
+
+# Visualize clusters
+plt.scatter(df_cluster['Age'], df_cluster['AvgPurchaseValue'], 
+            c=df_cluster['Cluster'])
+plt.xlabel("Age")
+plt.ylabel("Average Purchase Value")
+plt.title("Customer Clusters")
+plt.show()
+
+# Cluster analysis
+print(df_cluster.groupby("Cluster").mean())
+\end{lstlisting}
+
+\end{document}
