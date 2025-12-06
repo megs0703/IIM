@@ -211,12 +211,76 @@ Retained (1) & 0.50 & 0.25 & 0.33 & 4 \\ \midrule
     \item \textbf{Class Imbalance Impact:} The 80-20 split in the dataset affects model performance, particularly for the minority class
 \end{itemize}
 
+\subsubsection{Predicted Outcomes with Supporting Evidence}
+The KNN algorithm classifies test samples based on the majority vote of their 5 nearest neighbors. Sample predictions from the test set demonstrate the model's decision-making process:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+\textbf{Customer} & \textbf{Age} & \textbf{Purchases} & \textbf{Avg Value} & \textbf{Predicted} & \textbf{Actual} \\ \midrule
+2 & 46 & 6 & 2068 & Retained & Retained \\
+95 & 22 & 6 & 1824 & Retained & Retained \\
+53 & 57 & 8 & 575 & Not Retained & Not Retained \\
+4 & 25 & 1 & 2136 & Not Retained & Not Retained \\
+63 & 27 & 2 & 1667 & Not Retained & Not Retained \\ \bottomrule
+\end{tabular}
+\caption{Sample KNN Predictions on Test Set}
+\end{table}
+
+\textbf{Distance-Based Classification:} The KNN model uses Euclidean distance in the feature space to identify the 5 nearest neighbors. For instance:
+\begin{itemize}
+    \item Customers with high purchase frequency (6-9 purchases) and moderate-to-high purchase values tend to be classified as "Retained"
+    \item Customers with low purchase frequency (0-2 purchases) are predominantly classified as "Not Retained"
+    \item The distance metric considers all features (Age, Gender, MembershipType, PurchasesLastMonth, AvgPurchaseValue, Region, ShoppingAlone) in normalized space
+    \item Neighbors with similar purchasing patterns strongly influence the final classification
+\end{itemize}
+
 \subsection{K-Means Clustering Results}
 
 \subsubsection{Optimal Cluster Selection}
 The elbow method was applied to determine the optimal number of clusters. The inertia values decreased as k increased, with a noticeable elbow at k=3, indicating three distinct customer segments.
 
-\subsubsection{Cluster Characteristics}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}cc@{}}
+\toprule
+\textbf{Number of Clusters (k)} & \textbf{Inertia} \\ \midrule
+1 & 700.00 \\
+2 & 450.23 \\
+3 & 320.15 \\
+4 & 275.48 \\
+5 & 245.92 \\
+6 & 225.31 \\
+7 & 210.45 \\
+8 & 198.67 \\
+9 & 188.23 \\ \bottomrule
+\end{tabular}
+\caption{Elbow Method: Inertia Values for Different k}
+\end{table}
+
+The sharp decrease in inertia from k=2 to k=3, followed by a more gradual decline, confirms k=3 as the optimal choice.
+
+\subsubsection{Final Cluster Assignments}
+The K-Means algorithm successfully assigned all 100 customers to three distinct clusters based on their behavioral patterns:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Cluster} & \textbf{Number of Customers} \\ \midrule
+Cluster 0 (Low-Value) & 32 \\
+Cluster 1 (Medium-Value) & 34 \\
+Cluster 2 (High-Value) & 34 \\ \midrule
+\textbf{Total} & 100 \\ \bottomrule
+\end{tabular}
+\caption{Customer Distribution Across Clusters}
+\end{table}
+
+\subsubsection{Updated Cluster Centroids}
+After convergence, the final centroids represent the center point of each cluster in the standardized feature space:
+
 \begin{table}[H]
 \centering
 \small
@@ -230,7 +294,31 @@ PurchasesLastMonth & 4.50 & 4.62 & 4.72 \\
 AvgPurchaseValue & 1,145 & 1,978 & 2,628 \\
 ShoppingAlone & 0.69 & 0.62 & 0.64 \\ \bottomrule
 \end{tabular}
-\caption{Mean Values by Cluster}
+\caption{Final Cluster Centroids (Mean Values)}
+\end{table}
+
+\textbf{Centroid Interpretation:}
+\begin{itemize}
+    \item \textbf{Cluster 0 Centroid:} Represents customers with lowest average purchase value (₹1,145), indicating price-sensitive shoppers
+    \item \textbf{Cluster 1 Centroid:} Represents mid-tier customers with moderate spending (₹1,978)
+    \item \textbf{Cluster 2 Centroid:} Represents premium customers with highest spending (₹2,628) and purchase frequency
+\end{itemize}
+
+\subsubsection{Sample Cluster Assignments}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}ccccccc@{}}
+\toprule
+\textbf{CustomerID} & \textbf{Age} & \textbf{Purchases} & \textbf{Avg Value} & \textbf{Region} & \textbf{Cluster} \\ \midrule
+9 & 28 & 9 & 784 & E & 0 \\
+15 & 20 & 3 & 589 & S & 0 \\
+2 & 46 & 6 & 2068 & N & 1 \\
+5 & 38 & 6 & 1791 & S & 1 \\
+1 & 56 & 2 & 2927 & E & 2 \\
+10 & 28 & 5 & 2944 & W & 2 \\ \bottomrule
+\end{tabular}
+\caption{Sample Customer Cluster Assignments}
 \end{table}
 
 \subsubsection{Cluster Profiles}
